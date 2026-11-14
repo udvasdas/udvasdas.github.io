@@ -1,872 +1,600 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Name — PhD Researcher</title>
-<meta name="description" content="PhD Researcher in Machine Learning">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Udvas Das</title>
+<meta name="description" content="Udvas Das, PhD student in reinforcement learning theory at Inria Lille and Université de Lille. Constrained bandits and reinforcement learning, performative learning, fairness over time.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --ink: #1a1917;
-    --ink-2: #4a4845;
-    --ink-3: #8a8784;
-    --paper: #faf9f6;
-    --paper-2: #f0ede6;
-    --paper-3: #e4dfd4;
-    --accent: #2a5fa8;
-    --accent-light: #e8f0fb;
-    --rule: rgba(26,25,23,0.12);
-    --serif: 'DM Serif Display', Georgia, serif;
-    --sans: 'DM Sans', system-ui, sans-serif;
-    --max: 780px;
-    --side: 2.5rem;
+/* Layout idea: a sticky left rail (who, where to go) beside one reading column;
+   every dated fact sits in a ledger row with its year in the gutter.
+   Light theme is notebook paper, dark theme is a blackboard. */
+:root {
+  --bg: #EEF1EC;        /* sage paper */
+  --panel: #E2E8E0;     /* figure ground */
+  --ink: #18262B;       /* graphite */
+  --muted: #55666A;
+  --line: #C6CFC5;
+  --accent: #0F6B5C;    /* board green, links */
+  --mark: #A86A00;      /* chalk yellow, darkened for paper */
+  --mark-soft: rgba(168, 106, 0, 0.16);
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "STIX Two Text", "Cambria", "Georgia", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17302B;      /* blackboard */
+    --panel: #11261F;
+    --ink: #ECEFE6;     /* chalk */
+    --muted: #A7B8AD;
+    --line: #2F4C45;
+    --accent: #93DAC4;
+    --mark: #F2C94C;    /* chalk yellow */
+    --mark-soft: rgba(242, 201, 76, 0.16);
+    color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #17302B;
+  --panel: #11261F;
+  --ink: #ECEFE6;
+  --muted: #A7B8AD;
+  --line: #2F4C45;
+  --accent: #93DAC4;
+  --mark: #F2C94C;
+  --mark-soft: rgba(242, 201, 76, 0.16);
+  color-scheme: dark;
+}
 
-  html { scroll-behavior: smooth; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a:hover { background: var(--mark-soft); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; border-radius: 2px; }
+p { margin: 0; }
 
-  body {
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.75;
-    color: var(--ink);
-    background: var(--paper);
-    font-weight: 300;
-  }
+.page {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 46rem);
+  gap: 4rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 4rem;
+}
 
-  /* ── NAV ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.1rem var(--side);
-    background: rgba(250,249,246,0.88);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--rule);
-  }
+/* ---------- rail ---------- */
+.rail { position: sticky; top: 3.5rem; align-self: start; display: flex; flex-direction: column; gap: 1.75rem; }
+.rail-name { font-family: var(--display); font-weight: 700; font-size: 1.25rem; line-height: 1.2; }
+.rail-role { color: var(--muted); font-size: 1rem; line-height: 1.4; margin-top: 0.35rem; }
+.rail nav ul, .rail .links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+.rail nav a { font-family: var(--display); font-weight: 500; font-size: 1rem; color: var(--ink); text-decoration: none; }
+.rail nav a:hover { color: var(--accent); background: none; text-decoration: underline; }
+.rail .links { font-size: 1rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
+.rail .email { overflow-wrap: anywhere; }
+.theme-btn {
+  align-self: flex-start;
+  font: 500 0.9rem var(--display);
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+}
+.theme-btn:hover { border-color: var(--ink); }
 
-  .nav-name {
-    font-family: var(--serif);
-    font-size: 1.1rem;
-    letter-spacing: 0.01em;
-    text-decoration: none;
-    color: var(--ink);
-  }
+/* ---------- hero ---------- */
+main { display: flex; flex-direction: column; gap: 4rem; min-width: 0; }
+h1 {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(3rem, 8.5vw, 5.75rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+.masthead { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem 2rem; }
+.portrait { width: 11rem; height: 11rem; flex: none; object-fit: cover; object-position: 50% 30%; border-radius: 50%; border: 1px solid var(--line); box-shadow: 0 0 0 6px var(--panel); }
+.updates { max-height: 15.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.9rem; padding: 1.1rem 1.2rem; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; font-size: 1.05rem; line-height: 1.5; scrollbar-width: thin; scrollbar-color: var(--muted) transparent; }
+.updates:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
+.lede { font-size: 1.35rem; line-height: 1.45; max-width: 34rem; margin-top: 1.5rem; }
+figure { margin: 2.25rem 0 0; }
+.board { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+#run { display: block; width: 100%; aspect-ratio: 16 / 9; }
+.board-foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem;
+  padding: 0.6rem 0.9rem; border-top: 1px solid var(--line);
+  font-family: var(--display); font-size: 0.9rem;
+}
+#run-status { font-variant-numeric: tabular-nums; }
+.board-foot button { font: 500 0.9rem var(--display); color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 0.18em; }
+figcaption { color: var(--muted); font-size: 1rem; line-height: 1.5; margin-top: 0.75rem; max-width: 40rem; }
 
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a {
-    font-size: 0.82rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-2);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--accent); }
+/* ---------- sections ---------- */
+section { display: flex; flex-direction: column; gap: 1.5rem; scroll-margin-top: 2rem; }
+h2 {
+  font-family: var(--display); font-weight: 700; font-size: 1.6rem; line-height: 1.2; letter-spacing: -0.01em;
+  margin: 0; padding-top: 1.25rem; border-top: 2px solid var(--ink); text-wrap: balance;
+}
+.prose { display: flex; flex-direction: column; gap: 1rem; max-width: 42rem; }
+.ledger { display: flex; flex-direction: column; gap: 1.4rem; }
+.row { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 0.2rem 1.5rem; }
+.when { font-family: var(--display); font-weight: 500; font-size: 0.95rem; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 0.2rem; }
+.what { display: flex; flex-direction: column; gap: 0.15rem; }
+.title { font-weight: 600; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 1rem; line-height: 1.5; }
+.me { font-weight: 700; color: var(--ink); }
+.venue { font-style: italic; }
 
-  /* ── LAYOUT ── */
-  main { padding-top: 4.5rem; }
+footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--line); padding-top: 1.25rem; }
 
-  section {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 5rem var(--side);
-  }
-
-  section + section { border-top: 1px solid var(--rule); }
-
-  /* ── HERO ── */
-  #about {
-    display: grid;
-    grid-template-columns: 1fr 200px;
-    gap: 4rem;
-    align-items: start;
-    padding-top: 6rem;
-  }
-
-  .hero-text h1 {
-    font-family: var(--serif);
-    font-size: clamp(2.4rem, 5vw, 3.5rem);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.4rem;
-  }
-
-  .hero-text h1 em {
-    font-style: italic;
-    color: var(--ink-2);
-  }
-
-  .hero-role {
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin-bottom: 2rem;
-  }
-
-  .hero-role a { color: var(--accent); text-decoration: none; }
-  .hero-role a:hover { text-decoration: underline; }
-
-  .hero-bio {
-    font-size: 0.97rem;
-    line-height: 1.8;
-    color: var(--ink-2);
-    margin-bottom: 2rem;
-  }
-
-  .hero-bio a { color: var(--accent); text-decoration: none; }
-  .hero-bio a:hover { text-decoration: underline; }
-
-  .hero-links {
-    display: flex; flex-wrap: wrap; gap: 0.6rem;
-  }
-
-  .pill {
-    display: inline-flex; align-items: center; gap: 0.35rem;
-    font-size: 0.8rem; font-weight: 400; letter-spacing: 0.04em;
-    padding: 0.4rem 0.85rem;
-    border: 1px solid var(--paper-3);
-    border-radius: 100px;
-    color: var(--ink-2);
-    text-decoration: none;
-    background: var(--paper-2);
-    transition: all 0.2s;
-  }
-  .pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-
-  .pill svg { width: 13px; height: 13px; }
-
-  .hero-photo {
-    position: relative;
-    margin-top: 0.5rem;
-  }
-
-  .photo-frame {
-    width: 180px; height: 220px;
-    border-radius: 4px;
-    background: var(--paper-3);
-    overflow: hidden;
-    position: relative;
-  }
-
-  .photo-frame img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* placeholder when no photo */
-  .photo-placeholder {
-    width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--serif); font-size: 3rem;
-    color: var(--ink-3);
-    background: linear-gradient(160deg, var(--paper-2) 0%, var(--paper-3) 100%);
-    letter-spacing: -0.02em;
-  }
-
-  .photo-frame::after {
-    content: '';
-    position: absolute; inset: 0;
-    border-radius: 4px;
-    box-shadow: inset 0 0 0 1px rgba(26,25,23,0.1);
-    pointer-events: none;
-  }
-
-  /* ── INTERESTS & EDUCATION ── */
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    margin-top: 3rem;
-  }
-
-  .col-heading {
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .interest-list { list-style: none; }
-  .interest-list li {
-    font-size: 0.9rem;
-    color: var(--ink-2);
-    padding: 0.35rem 0;
-    display: flex; align-items: center; gap: 0.5rem;
-  }
-  .interest-list li::before {
-    content: '';
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
-  }
-
-  .edu-item { margin-bottom: 1.2rem; }
-  .edu-degree {
-    font-size: 0.9rem;
-    font-weight: 400;
-    color: var(--ink);
-  }
-  .edu-meta {
-    font-size: 0.8rem;
-    color: var(--ink-3);
-    margin-top: 0.1rem;
-  }
-
-  /* ── SECTION HEADING ── */
-  .sec-head {
-    display: flex; align-items: baseline; gap: 1rem;
-    margin-bottom: 3rem;
-  }
-
-  .sec-head h2 {
-    font-family: var(--serif);
-    font-size: 1.9rem;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-  }
-
-  .sec-head .count {
-    font-size: 0.8rem;
-    color: var(--ink-3);
-    letter-spacing: 0.05em;
-  }
-
-  /* ── PUBLICATIONS ── */
-  .pub-filters {
-    display: flex; gap: 0.5rem; flex-wrap: wrap;
-    margin-bottom: 2.5rem;
-  }
-
-  .filter-btn {
-    font-family: var(--sans);
-    font-size: 0.78rem;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 0.3rem 0.8rem;
-    border: 1px solid var(--paper-3);
-    border-radius: 100px;
-    background: transparent;
-    color: var(--ink-3);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .filter-btn:hover, .filter-btn.active {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: var(--paper);
-  }
-
-  .pub-list { display: flex; flex-direction: column; gap: 0; }
-
-  .pub-item {
-    padding: 1.6rem 0;
-    border-bottom: 1px solid var(--rule);
-    display: grid;
-    grid-template-columns: 52px 1fr;
-    gap: 1.2rem;
-    align-items: start;
-    opacity: 1;
-    transition: opacity 0.2s;
-  }
-
-  .pub-item.hidden { display: none; }
-
-  .pub-year {
-    font-size: 0.78rem;
-    color: var(--ink-3);
-    letter-spacing: 0.04em;
-    padding-top: 0.25rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .pub-venue {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: var(--accent-light);
-    border-radius: 3px;
-    padding: 0.15rem 0.5rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .pub-title {
-    font-size: 0.97rem;
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1.45;
-    margin-bottom: 0.3rem;
-    text-decoration: none;
-    display: block;
-  }
-  .pub-title:hover { color: var(--accent); }
-
-  .pub-authors {
-    font-size: 0.82rem;
-    color: var(--ink-3);
-    margin-bottom: 0.6rem;
-  }
-  .pub-authors strong { color: var(--ink-2); font-weight: 400; }
-
-  .pub-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-
-  .pub-tag {
-    font-size: 0.75rem;
-    color: var(--ink-2);
-    text-decoration: none;
-    border: 1px solid var(--paper-3);
-    border-radius: 3px;
-    padding: 0.15rem 0.5rem;
-    background: var(--paper-2);
-    transition: all 0.15s;
-  }
-  .pub-tag:hover { border-color: var(--ink-2); color: var(--ink); }
-
-  /* ── EXPERIENCE ── */
-  .exp-list { display: flex; flex-direction: column; position: relative; }
-
-  .exp-list::before {
-    content: '';
-    position: absolute;
-    left: 7px; top: 6px; bottom: 6px;
-    width: 1px;
-    background: var(--rule);
-  }
-
-  .exp-item {
-    display: grid;
-    grid-template-columns: 32px 1fr;
-    gap: 1rem;
-    padding: 0 0 2.5rem;
-    align-items: start;
-  }
-
-  .exp-dot {
-    width: 15px; height: 15px;
-    border-radius: 50%;
-    border: 2px solid var(--paper);
-    background: var(--paper-3);
-    margin-top: 0.3rem;
-    position: relative; z-index: 1;
-    transition: background 0.2s;
-  }
-  .exp-item:first-child .exp-dot { background: var(--accent); }
-
-  .exp-role {
-    font-size: 0.97rem;
-    font-weight: 400;
-    color: var(--ink);
-  }
-
-  .exp-place {
-    font-size: 0.88rem;
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .exp-place:hover { text-decoration: underline; }
-
-  .exp-period {
-    font-size: 0.78rem;
-    color: var(--ink-3);
-    margin: 0.2rem 0;
-    letter-spacing: 0.02em;
-  }
-
-  .exp-desc {
-    font-size: 0.88rem;
-    color: var(--ink-2);
-    line-height: 1.6;
-    margin-top: 0.4rem;
-  }
-
-  /* ── TALKS ── */
-  .talk-item {
-    padding: 1.4rem 0;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .talk-date {
-    font-size: 0.78rem;
-    color: var(--ink-3);
-    letter-spacing: 0.04em;
-    margin-bottom: 0.3rem;
-  }
-
-  .talk-title {
-    font-size: 0.97rem;
-    color: var(--ink);
-    font-weight: 400;
-    text-decoration: none;
-  }
-  .talk-title:hover { color: var(--accent); }
-
-  .talk-venue {
-    font-size: 0.84rem;
-    color: var(--ink-3);
-    margin-top: 0.15rem;
-  }
-
-  /* ── CONTACT ── */
-  #contact { padding-bottom: 6rem; }
-
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    margin-top: 2rem;
-  }
-
-  .contact-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-    margin-bottom: 0.6rem;
-  }
-
-  .contact-val {
-    font-size: 0.95rem;
-    color: var(--ink-2);
-    line-height: 1.7;
-  }
-  .contact-val a { color: var(--accent); text-decoration: none; }
-  .contact-val a:hover { text-decoration: underline; }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--rule);
-    padding: 1.5rem var(--side);
-    max-width: var(--max);
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.78rem;
-    color: var(--ink-3);
-  }
-
-  /* ── FADE-IN ── */
-  .fade {
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .fade.visible { opacity: 1; transform: none; }
-
-  /* ── MOBILE ── */
-  @media (max-width: 640px) {
-    :root { --side: 1.25rem; }
-    #about { grid-template-columns: 1fr; }
-    .hero-photo { display: flex; justify-content: center; order: -1; }
-    .photo-frame { width: 120px; height: 145px; }
-    .two-col, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .nav-links { display: none; }
-  }
+@media (max-width: 56rem) {
+  .page { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; padding: 2rem 1.1rem 3rem; }
+  .rail { position: static; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+  .portrait { width: 8rem; height: 8rem; }
+  .rail-id { display: none; }
+  .rail nav { flex-basis: 100%; }
+  .rail nav ul { flex-direction: row; flex-wrap: wrap; gap: 0.35rem 1.1rem; }
+  .rail .links { flex-direction: row; flex-wrap: wrap; gap: 0.35rem 1.1rem; border-top: 0; padding-top: 0; flex-basis: 100%; }
+  main { gap: 3rem; }
+}
+@media (max-width: 30rem) {
+  body { font-size: 1.0625rem; }
+  .portrait { width: 5.5rem; height: 5.5rem; box-shadow: 0 0 0 4px var(--panel); }
+  .masthead { gap: 1rem; }
+  .row { grid-template-columns: minmax(0, 1fr); }
+  .lede { font-size: 1.2rem; }
+}
 </style>
 </head>
 <body>
+<div class="page">
 
-<!-- NAV -->
-<nav>
-  <a class="nav-name" href="#about">Your Name</a>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#publications">Research</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#talks">Talks</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="resume.pdf" style="color:var(--accent)">CV ↗</a></li>
-  </ul>
-</nav>
-
-<main>
-
-<!-- ── ABOUT ── -->
-<section id="about">
-  <div class="hero-text fade">
-    <p class="hero-role">
-      PhD Researcher · <a href="#">Your University</a> · <a href="#">Your Lab</a>
-    </p>
-    <h1>Your Name<br><em>Researcher in<br>Machine Learning</em></h1>
-
-    <p class="hero-bio" style="margin-top:1.8rem">
-      I am a second-year PhD student at <a href="#">Your University</a>, supervised by
-      <a href="#">Prof. Supervisor Name</a>. My research sits at the intersection of
-      <strong style="font-weight:400;color:var(--ink)">reinforcement learning</strong> and
-      <strong style="font-weight:400;color:var(--ink)">performative prediction</strong>,
-      where I study how deployed algorithms shape the very environments they operate in.
-    </p>
-
-    <p class="hero-bio">
-      Previously, I completed my Masters at <a href="#">Institution</a> and interned at
-      <a href="#">Research Lab</a>. I am broadly interested in the theoretical foundations
-      of sequential decision-making and statistical learning theory.
-    </p>
-
-    <div class="hero-links">
-      <a class="pill" href="mailto:you@university.edu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        Email
-      </a>
-      <a class="pill" href="https://scholar.google.com" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        Scholar
-      </a>
-      <a class="pill" href="https://github.com/yourusername" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-        GitHub
-      </a>
-      <a class="pill" href="https://linkedin.com" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-        LinkedIn
-      </a>
-      <a class="pill" href="https://twitter.com" target="_blank">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-        Twitter
-      </a>
+  <aside class="rail">
+    <div class="rail-id">
+      <div class="rail-name">Udvas Das</div>
+      <div class="rail-role">PhD student, Équipe Scool<br>Inria and Université de Lille</div>
     </div>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#updates">Updates</a></li>
+        <li><a href="#research">Research</a></li>
+        <li><a href="#publications">Publications</a></li>
+        <li><a href="#talks">Talks</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#teaching">Teaching and mentoring</a></li>
+      </ul>
+    </nav>
+    <ul class="links">
+      <li><a class="email" href="mailto:udvas.das@inria.fr">udvas.das@inria.fr</a></li>
+      <li><a href="https://scholar.google.com/citations?user=7KmDWyYAAAAJ&amp;hl=en">Google Scholar</a></li>
+      <li><a href="https://github.com/udvasdas">GitHub</a></li>
+      <li><a href="Udvas_Das_CV.pdf">CV (PDF)</a></li>
+    </ul>
+    <button class="theme-btn" id="theme-btn" type="button">Switch to blackboard</button>
+  </aside>
 
-    <div class="two-col" style="margin-top:3rem">
-      <div>
-        <p class="col-heading">Research interests</p>
-        <ul class="interest-list">
-          <li>Performative Reinforcement Learning</li>
-          <li>Policy Gradient Methods</li>
-          <li>Multi-Armed Bandits</li>
-          <li>Online Learning & Optimisation</li>
-          <li>Statistical Learning Theory</li>
-        </ul>
+  <main>
+    <header>
+      <div class="masthead">
+        <div>
+          <h1>Udvas Das</h1>
+          <p class="lede">PhD student in reinforcement learning theory at Inria Lille.</p>
+        </div>
+        <img class="portrait" src="prof_pic.jpg" alt="Portrait of Udvas Das" onerror="this.remove()">
       </div>
-      <div>
-        <p class="col-heading">Education</p>
-        <div class="edu-item">
-          <p class="edu-degree">PhD in Machine Learning, 2023–present</p>
-          <p class="edu-meta">Your University · Supervised by Prof. Name</p>
+      <figure>
+        <div class="board">
+          <canvas id="run" role="img" aria-label="Animation of a bandit algorithm narrowing confidence regions around six arms until the best arm within a cost budget is identified."></canvas>
+          <div class="board-foot">
+            <span id="run-status">Starting a run</span>
+            <button type="button" id="run-again">Run again</button>
+          </div>
         </div>
-        <div class="edu-item">
-          <p class="edu-degree">MSc in Data Science, 2021–2023</p>
-          <p class="edu-meta">Previous University</p>
-        </div>
-        <div class="edu-item">
-          <p class="edu-degree">BSc in Mathematics, 2018–2021</p>
-          <p class="edu-meta">Undergraduate University</p>
-        </div>
+        <figcaption>A pure-exploration run, live in your browser. Each box is a confidence region for one arm's reward and cost, and it shrinks as the arm is sampled. Costs are learned too, so an arm counts as within budget only once its whole box sits left of the dashed line. Sampling stops when one arm is certified as the best within budget. This is a simple elimination rule for illustration, not one of the algorithms in my papers.</figcaption>
+      </figure>
+    </header>
+
+    <section id="updates">
+      <h2>Updates</h2>
+      <div class="updates" tabindex="0" role="region" aria-label="News and updates, scrollable">
+        <div class="row"><div class="when">Nov 2026</div><div>Visiting the Indian Institute of Science with the Inria–IISc associate team FOSSIL, working on sequential testing.</div></div>
+        <div class="row"><div class="when">2026</div><div><em>Safely Optimal</em> presented at the ICML Workshop on Hypothesis Testing and at EWRL.</div></div>
+        <div class="row"><div class="when">2026</div><div>Spotlight talk on <a href="https://arxiv.org/abs/2607.19389">Simulating Eutopia</a> at ECAF.</div></div>
+        <div class="row"><div class="when">2026</div><div><a href="https://arxiv.org/abs/2606.09802">Bandits for Efficient Experimentation</a> accepted at RLC.</div></div>
+        <div class="row"><div class="when">2026</div><div><a href="https://arxiv.org/abs/2512.20576">Performative Policy Gradient</a> accepted at ICML.</div></div>
+        <div class="row"><div class="when">2026</div><div><a href="https://arxiv.org/abs/2410.18844">Learning to Explore with Lagrangians</a> accepted at AISTATS.</div></div>
+        <div class="row"><div class="when">2026</div><div>Teaching assistant for Reinforcement Learning Theory at Master MVA, ENS Paris-Saclay.</div></div>
+        <div class="row"><div class="when">2025</div><div><em>FraPPE</em> published at NeurIPS.</div></div>
+        <div class="row"><div class="when">2025</div><div>Talks on preference-based pure exploration at CWI and at the Indian Statistical Institute.</div></div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <div class="hero-photo fade" style="transition-delay:0.15s">
-    <div class="photo-frame">
-      <!-- Replace the div below with: <img src="photo.jpg" alt="Your Name"> -->
-      <img src="prof_pic.jpg" alt="Udvas">
-    </div>
-  </div>
-</section>
-
-<!-- ── PUBLICATIONS ── -->
-<section id="publications">
-  <div class="sec-head fade">
-    <h2>Publications</h2>
-    <span class="count">8 papers</span>
-  </div>
-
-  <div class="pub-filters fade" style="transition-delay:0.1s">
-    <button class="filter-btn active" onclick="filterPubs('all',this)">All</button>
-    <button class="filter-btn" onclick="filterPubs('neurips',this)">NeurIPS</button>
-    <button class="filter-btn" onclick="filterPubs('icml',this)">ICML</button>
-    <button class="filter-btn" onclick="filterPubs('aistats',this)">AISTATS</button>
-    <button class="filter-btn" onclick="filterPubs('other',this)">Other</button>
-  </div>
-
-  <div class="pub-list">
-
-    <div class="pub-item fade" data-venue="icml">
-      <span class="pub-year">2026</span>
-      <div>
-        <span class="pub-venue">ICML 2026</span>
-        <a class="pub-title" href="#">Performative Policy Gradient: Optimality in Performative Reinforcement Learning</a>
-        <p class="pub-authors"><strong>Your Name</strong>, Collaborator A, Collaborator B</p>
-        <div class="pub-tags">
-          <a class="pub-tag" href="#">PDF</a>
-          <a class="pub-tag" href="#">Code</a>
-          <a class="pub-tag" href="#">Slides</a>
-          <a class="pub-tag" href="#">Poster</a>
-        </div>
+    <section id="research">
+      <h2>Research</h2>
+      <div class="prose">
+        <p>My doctoral thesis is on constrained reinforcement learning: I design efficient and frugal algorithms for sequential decision-making under uncertainty, with provable guarantees. A central question is how constraints, whether on safety, resources or preferences, and whether known or to be learned, change the statistical hardness of bandit and reinforcement learning problems. I study it through sample-complexity lower bounds and algorithms that match them.</p>
+        <p>My interests also span fair machine learning, where fairness requirements act as constraints on the learner. Lately I have been working on performative machine learning and reinforcement learning, in which a deployed model or policy shifts the environment it learns from, and on dynamic fairness and auditing, where bias is measured and mitigated over time as models, data and populations evolve.</p>
+        <p>I am advised by Debabrota Basu and Odalric-Ambrym Maillard. My thesis is titled <em>Impact of Constraints in Reinforcement Learning</em>.</p>
       </div>
-    </div>
+    </section>
 
-    <div class="pub-item fade" data-venue="neurips" style="transition-delay:0.05s">
-      <span class="pub-year">2025</span>
-      <div>
-        <span class="pub-venue">NeurIPS 2025</span>
-        <a class="pub-title" href="#">Sample-Efficient Exploration in Stochastic Multi-Armed Bandits via Performative Shifts</a>
-        <p class="pub-authors">Collaborator A, <strong>Your Name</strong>, Supervisor Name</p>
-        <div class="pub-tags">
-          <a class="pub-tag" href="#">PDF</a>
-          <a class="pub-tag" href="#">Code</a>
-          <a class="pub-tag" href="#">Poster</a>
-          <a class="pub-tag" href="#">Video</a>
+    <section id="publications">
+      <h2>Publications</h2>
+      <div class="ledger">
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <a class="title" href="https://arxiv.org/abs/2512.20576">Performative Policy Gradient: Optimality in Performative Reinforcement Learning</a>
+            <div class="sub">D. Basu, <span class="me">U. Das</span>, B. Driss, U. Mukherjee</div>
+            <div class="sub venue">International Conference on Machine Learning (ICML)</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <a class="title" href="https://arxiv.org/abs/2606.09802">Bandits for Efficient Experimentation: Adapting to Control Group, Preferences, and Context Drifts</a>
+            <div class="sub"><span class="me">U. Das</span>, W. Radji, D. Basu, O.-A. Maillard</div>
+            <div class="sub venue">Reinforcement Learning Conference (RLC)</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <a class="title" href="https://arxiv.org/abs/2410.18844">Learning to Explore with Lagrangians for Bandits under Unknown Constraints</a>
+            <div class="sub"><span class="me">U. Das</span>, D. Basu</div>
+            <div class="sub venue">International Conference on Artificial Intelligence and Statistics (AISTATS)</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <a class="title" href="https://arxiv.org/abs/2607.19389">Simulating Eutopia: Revisiting Long-term Fairness with Outcomes, Performativity, and Dynamics</a>
+            <div class="sub">V. Palit, <span class="me">U. Das</span>, B. Driss, D. Basu</div>
+            <div class="sub venue">European Conference on Algorithmic Fairness (ECAF)</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <span class="title">Safely Optimal: Pure Exploration in Bandits with Unknown Linear Constraints</span>
+            <div class="sub"><span class="me">U. Das</span>, A. Azize, D. Basu</div>
+            <div class="sub venue">ICML Workshop on Hypothesis Testing, and EWRL</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2025</div>
+          <div class="what">
+            <span class="title">FraPPE: Fast and Efficient Preference-based Pure Exploration</span>
+            <div class="sub"><span class="me">U. Das</span>, A. Shukla, D. Basu</div>
+            <div class="sub venue">Advances in Neural Information Processing Systems (NeurIPS) 38, pp. 9225–9271</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2025</div>
+          <div class="what">
+            <a class="title" href="https://arxiv.org/abs/2508.06443">The Fair Game: Auditing &amp; Debiasing AI Algorithms Over Time</a>
+            <div class="sub">D. Basu, <span class="me">U. Das</span></div>
+            <div class="sub venue">Cambridge Forum on AI: Law and Governance, 1, e27</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2025</div>
+          <div class="what">
+            <span class="title">Human Values in the Loop: Rethinking Bias and Alignment in Educational AI</span>
+            <div class="sub"><span class="me">U. Das</span>, D. Basu</div>
+            <div class="sub">Book chapter in <a class="venue" href="https://www.amazon.com/dp/B0FLW192DG">AI Bias in Education: Performing Critical Oversight</a>, edited by Victoria Hedlund</div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="pub-item fade" data-venue="icml" style="transition-delay:0.08s">
-      <span class="pub-year">2025</span>
-      <div>
-        <span class="pub-venue">ICML 2025</span>
-        <a class="pub-title" href="#">Convergence Guarantees for Policy Gradient under Distribution Shift</a>
-        <p class="pub-authors"><strong>Your Name</strong>, Supervisor Name</p>
-        <div class="pub-tags">
-          <a class="pub-tag" href="#">PDF</a>
-          <a class="pub-tag" href="#">Slides</a>
+    <section id="talks">
+      <h2>Talks</h2>
+      <div class="ledger">
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <div class="title">Simulating Eutopia: Revisiting Long-term Fairness with Outcomes, Performativity, and Dynamics</div>
+            <div class="sub">Spotlight talk, ECAF 2026</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2025</div>
+          <div class="what">
+            <div class="title">Preference-based Pure Exploration</div>
+            <div class="sub">Invited talk, weekly seminar at ACMU, Indian Statistical Institute</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2025</div>
+          <div class="what">
+            <div class="title">FraPPE: Fast and Efficient Preference-based Pure Exploration</div>
+            <div class="sub">Contributed talk, Workshop on Theory of Control and Reinforcement Learning, Centrum Wiskunde &amp; Informatica (CWI)</div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="pub-item fade" data-venue="aistats" style="transition-delay:0.1s">
-      <span class="pub-year">2025</span>
-      <div>
-        <span class="pub-venue">AISTATS 2025</span>
-        <a class="pub-title" href="#">Top-Two Algorithms for Performative Best-Arm Identification</a>
-        <p class="pub-authors">Collaborator B, <strong>Your Name</strong>, Collaborator C, Supervisor Name</p>
-        <div class="pub-tags">
-          <a class="pub-tag" href="#">PDF</a>
-          <a class="pub-tag" href="#">Code</a>
-          <a class="pub-tag" href="#">Poster</a>
+    <section id="experience">
+      <h2>Experience and education</h2>
+      <div class="ledger">
+        <div class="row">
+          <div class="when">Nov 2026</div>
+          <div class="what">
+            <div class="title">Visiting researcher, Indian Institute of Science (IISc)</div>
+            <div class="sub">Sequential testing, with Shubhada Agrawal and Aditya Gopalan, as part of the Inria–IISc associate team FOSSIL</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2024 – now</div>
+          <div class="what">
+            <div class="title">PhD in Computer Science, Université de Lille and Inria</div>
+            <div class="sub">Doctoral researcher in Équipe Scool, on bandits and reinforcement learning theory</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2023 – 2024</div>
+          <div class="what">
+            <div class="title">Associate Data Scientist, PrediQt Business Solutions</div>
+            <div class="sub">Now Rezolve AddVenture, part of Rezolve Ai PLC. July 2023 to February 2024, India</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2021 – 2023</div>
+          <div class="what">
+            <div class="title">M.Sc. in Big Data Analytics, RKMVERI</div>
+            <div class="sub">Ramakrishna Mission Vivekananda Educational and Research Institute, India. CGPA 9.39/10. Thesis: <em>Studying hardness of learning contextual bandits under constraints</em>, advised by Debabrota Basu</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2018 – 2021</div>
+          <div class="what">
+            <div class="title">B.Sc. (Hons.) in Statistics, St. Xavier's College, Kolkata</div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="pub-item fade" data-venue="neurips" style="transition-delay:0.12s">
-      <span class="pub-year">2024</span>
-      <div>
-        <span class="pub-venue">NeurIPS 2024</span>
-        <a class="pub-title" href="#">Stability vs. Optimality in Reinforcement Learning under Performative Feedback</a>
-        <p class="pub-authors"><strong>Your Name</strong>, Collaborator A</p>
-        <div class="pub-tags">
-          <a class="pub-tag" href="#">PDF</a>
-          <a class="pub-tag" href="#">Code</a>
-          <a class="pub-tag" href="#">Poster</a>
-          <a class="pub-tag" href="#">Video</a>
+    <section id="teaching">
+      <h2>Teaching and mentoring</h2>
+      <div class="ledger">
+        <div class="row">
+          <div class="when">2026, 2027</div>
+          <div class="what">
+            <div class="title">Teaching assistant, Reinforcement Learning Theory</div>
+            <div class="sub">Master MVA, ENS Paris-Saclay. The 2027 session is upcoming</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <div class="title">Master's thesis of <a href="https://vedantpalit.github.io/">Vedant Palit</a>, co-supervision</div>
+            <div class="sub"><em>Revisiting Long-term Fairness in Sequential Decision Making</em>, Indian Institute of Technology Kharagpur</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2025</div>
+          <div class="what">
+            <div class="title">Master's thesis of Uddalak Mukherjee, co-supervision</div>
+            <div class="sub"><em>Achieving Optimality in Performative Reinforcement Learning</em>, RKMVERI</div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="pub-item fade" data-venue="other" style="transition-delay:0.14s">
-      <span class="pub-year">2024</span>
-      <div>
-        <span class="pub-venue">ALT 2024</span>
-        <a class="pub-title" href="#">Non-Asymptotic Analysis of Performative Retraining Algorithms</a>
-        <p class="pub-authors"><strong>Your Name</strong>, Supervisor Name, Collaborator B</p>
-        <div class="pub-tags">
-          <a class="pub-tag" href="#">PDF</a>
-          <a class="pub-tag" href="#">Slides</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="pub-item fade" data-venue="icml" style="transition-delay:0.16s">
-      <span class="pub-year">2023</span>
-      <div>
-        <span class="pub-venue">ICML 2023</span>
-        <a class="pub-title" href="#">Linear MDPs with Performative Transition Kernels: Learnability and Limits</a>
-        <p class="pub-authors">Collaborator C, <strong>Your Name</strong>, Collaborator A</p>
-        <div class="pub-tags">
-          <a class="pub-tag" href="#">PDF</a>
-          <a class="pub-tag" href="#">Code</a>
-          <a class="pub-tag" href="#">Slides</a>
-          <a class="pub-tag" href="#">Video</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="pub-item fade" data-venue="other" style="transition-delay:0.18s">
-      <span class="pub-year">2023</span>
-      <div>
-        <span class="pub-venue">Preprint</span>
-        <a class="pub-title" href="#">A Survey of Performativity in Machine Learning: From Prediction to Decision</a>
-        <p class="pub-authors"><strong>Your Name</strong>, Collaborator D</p>
-        <div class="pub-tags">
-          <a class="pub-tag" href="#">arXiv</a>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ── EXPERIENCE ── -->
-<section id="experience">
-  <div class="sec-head fade">
-    <h2>Experience</h2>
-  </div>
-
-  <div class="exp-list">
-
-    <div class="exp-item fade">
-      <div class="exp-dot"></div>
-      <div>
-        <p class="exp-role">PhD Researcher</p>
-        <a class="exp-place" href="#">Your Lab · Your University</a>
-        <p class="exp-period">Sep 2023 – Present · City, Country</p>
-        <p class="exp-desc">Working on the theoretical foundations of performative reinforcement learning under the supervision of Prof. Supervisor Name. Focus on policy gradient methods and optimality conditions in non-stationary environments.</p>
-      </div>
-    </div>
-
-    <div class="exp-item fade" style="transition-delay:0.06s">
-      <div class="exp-dot"></div>
-      <div>
-        <p class="exp-role">Research Intern</p>
-        <a class="exp-place" href="#">Research Lab</a>
-        <p class="exp-period">May 2023 – Aug 2023 · City, Country</p>
-        <p class="exp-desc">Studied bandits under distribution shift, collaborating with senior researchers on algorithm design and empirical evaluation.</p>
-      </div>
-    </div>
-
-    <div class="exp-item fade" style="transition-delay:0.1s">
-      <div class="exp-dot"></div>
-      <div>
-        <p class="exp-role">MSc Research Project</p>
-        <a class="exp-place" href="#">Previous University</a>
-        <p class="exp-period">Jan 2023 – Jun 2023 · City, Country</p>
-        <p class="exp-desc">Thesis on pure exploration algorithms for combinatorial bandits with semi-bandit feedback, under supervision of Prof. Name.</p>
-      </div>
-    </div>
-
-    <div class="exp-item fade" style="transition-delay:0.14s">
-      <div class="exp-dot"></div>
-      <div>
-        <p class="exp-role">Teaching Assistant</p>
-        <a class="exp-place" href="#">Previous University</a>
-        <p class="exp-period">Sep 2022 – Dec 2022 · City, Country</p>
-        <p class="exp-desc">Tutorial sessions for Statistical Learning Theory (MSc course). Designed problem sets and graded assignments.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ── TALKS ── -->
-<section id="talks">
-  <div class="sec-head fade">
-    <h2>Talks</h2>
-  </div>
-
-  <div class="fade">
-    <div class="talk-item">
-      <p class="talk-date">April 2026</p>
-      <a class="talk-title" href="#">Performative Optimality in Reinforcement Learning</a>
-      <p class="talk-venue">ML Theory Seminar · Partner University</p>
-    </div>
-    <div class="talk-item">
-      <p class="talk-date">November 2025</p>
-      <a class="talk-title" href="#">Policy Gradient Methods Beyond the Static Environment Assumption</a>
-      <p class="talk-venue">NeurIPS 2025 Workshop on Distribution Shifts · San Diego</p>
-    </div>
-    <div class="talk-item">
-      <p class="talk-date">July 2025</p>
-      <a class="talk-title" href="#">Convergence of PePG: Performative Policy Gradient</a>
-      <p class="talk-venue">ICML 2025 · Vienna</p>
-    </div>
-    <div class="talk-item">
-      <p class="talk-date">March 2025</p>
-      <a class="talk-title" href="#">Stability vs. Optimality in Performative RL</a>
-      <p class="talk-venue">Lab Seminar · Your University</p>
-    </div>
-    <div class="talk-item">
-      <p class="talk-date">December 2024</p>
-      <a class="talk-title" href="#">An Introduction to Performative Prediction and its Extensions to RL</a>
-      <p class="talk-venue">Reading Group · Your Lab</p>
-    </div>
-  </div>
-</section>
-
-<!-- ── CONTACT ── -->
-<section id="contact">
-  <div class="sec-head fade">
-    <h2>Contact</h2>
-  </div>
-
-  <div class="contact-grid fade">
-    <div>
-      <p class="contact-label">Email</p>
-      <p class="contact-val"><a href="mailto:you@university.edu">you@university.edu</a></p>
-    </div>
-    <div>
-      <p class="contact-label">Office</p>
-      <p class="contact-val">Building Name, Room 000<br>University Address<br>City, Country</p>
-    </div>
-    <div>
-      <p class="contact-label">Find me online</p>
-      <p class="contact-val">
-        <a href="https://scholar.google.com" target="_blank">Google Scholar</a> ·
-        <a href="https://github.com" target="_blank">GitHub</a> ·
-        <a href="https://linkedin.com" target="_blank">LinkedIn</a> ·
-        <a href="https://twitter.com" target="_blank">Twitter / X</a>
-      </p>
-    </div>
-    <div>
-      <p class="contact-label">CV</p>
-      <p class="contact-val"><a href="resume.pdf">Download PDF ↓</a></p>
-    </div>
-  </div>
-</section>
-
-</main>
-
-<footer>
-  <span>© 2026 Your Name</span>
-  <span>Built with HTML · Hosted on GitHub Pages</span>
-</footer>
+    <footer>Last updated November 2026.</footer>
+  </main>
+</div>
 
 <script>
-  // ── Fade-in on scroll ──
-  const fades = document.querySelectorAll('.fade');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  fades.forEach(el => io.observe(el));
+/* Theme switch: paper by day, blackboard by night. Follows the system until clicked. */
+(function () {
+  var root = document.documentElement, btn = document.getElementById('theme-btn');
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function label() { btn.textContent = isDark() ? 'Switch to paper' : 'Switch to blackboard'; }
+  btn.addEventListener('click', function () {
+    root.setAttribute('data-theme', isDark() ? 'light' : 'dark');
+    label();
+    window.dispatchEvent(new Event('themechange'));
+  });
+  label();
+})();
 
-  // ── Publication filter ──
-  function filterPubs(venue, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.pub-item').forEach(item => {
-      if (venue === 'all' || item.dataset.venue === venue) {
-        item.classList.remove('hidden');
-      } else {
-        item.classList.add('hidden');
+/* Hero figure: successive elimination for best-arm identification under a cost budget. */
+(function () {
+  var cv = document.getElementById('run'), ctx = cv.getContext('2d');
+  var statusEl = document.getElementById('run-status');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var BUDGET = 0.6, SIGMA = 0.25, K = 6, CAP = 5000;
+  var arms = [], total = 0, done = false, winner = null;
+  var raf = null, holdUntil = 0, visible = true, W = 0, H = 0;
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function gauss() {
+    var u = 0; while (!u) u = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * Math.random());
+  }
+  function instance() {
+    for (var t = 0; t < 800; t++) {
+      var a = [], i, j, ok = true;
+      for (i = 0; i < K; i++) a.push({ c: rnd(0.12, 0.92), r: rnd(0.15, 0.9) });
+      for (i = 0; i < K && ok; i++) {
+        if (Math.abs(a[i].c - BUDGET) < 0.07) ok = false;
+        for (j = i + 1; j < K && ok; j++) {
+          if (Math.hypot(a[i].c - a[j].c, a[i].r - a[j].r) < 0.13) ok = false;
+        }
       }
-    });
+      if (!ok) continue;
+      var feas = a.filter(function (x) { return x.c < BUDGET; }).sort(function (p, q) { return q.r - p.r; });
+      if (feas.length < 2 || feas[0].r - feas[1].r < 0.12) continue;
+      if (!a.some(function (x) { return x.c > BUDGET && x.r > feas[0].r; })) continue;
+      return a;
+    }
+    return [ { c: 0.2, r: 0.3 }, { c: 0.35, r: 0.72 }, { c: 0.48, r: 0.5 },
+             { c: 0.72, r: 0.86 }, { c: 0.85, r: 0.45 }, { c: 0.15, r: 0.55 } ];
+  }
+  function pull(a) {
+    a.n++; a.sr += a.r + SIGMA * gauss(); a.sc += a.c + SIGMA * gauss(); total++;
+  }
+  function update() {
+    var i, a, bestLow = -Infinity;
+    for (i = 0; i < K; i++) {
+      a = arms[i];
+      a.mr = a.sr / a.n; a.mc = a.sc / a.n;
+      a.w = SIGMA * Math.sqrt(2 * Math.log(40) / a.n);
+      if (a.state === 'active' && a.mc - a.w > BUDGET) a.state = 'over';
+    }
+    for (i = 0; i < K; i++) {
+      a = arms[i];
+      if (a.state === 'active' && a.mc + a.w < BUDGET) bestLow = Math.max(bestLow, a.mr - a.w);
+    }
+    var act = [];
+    for (i = 0; i < K; i++) {
+      a = arms[i];
+      if (a.state === 'active' && a.mr + a.w < bestLow) a.state = 'beaten';
+      if (a.state === 'active') act.push(a);
+    }
+    if (act.length === 1 && act[0].mc + act[0].w < BUDGET) { done = true; winner = act[0]; }
+    else if (act.length === 0 || total >= CAP) { done = true; winner = null; }
+  }
+  function step() {
+    var pick = null;
+    for (var i = 0; i < K; i++) {
+      if (arms[i].state === 'active' && (!pick || arms[i].n < pick.n)) pick = arms[i];
+    }
+    if (!pick) { done = true; return; }
+    pull(pick); update();
+  }
+  function reset() {
+    arms = instance().map(function (x) { return { c: x.c, r: x.r, n: 0, sr: 0, sc: 0, state: 'active' }; });
+    total = 0; done = false; winner = null; holdUntil = 0;
+    arms.forEach(function (a) { pull(a); pull(a); });
+    update();
   }
 
-  // ── Active nav link on scroll ──
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  function size() {
+    var rect = cv.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = Math.max(rect.width, 10); H = Math.max(rect.height, 10);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function draw() {
+    var cs = getComputedStyle(document.documentElement);
+    var ink = cs.getPropertyValue('--ink').trim(), muted = cs.getPropertyValue('--muted').trim();
+    var line = cs.getPropertyValue('--line').trim(), mark = cs.getPropertyValue('--mark').trim();
+    var small = W < 420;
+    var L = small ? 14 : 28, R = small ? 10 : 18, T = 26, B = 30;
+    var pw = W - L - R, ph = H - T - B;
+    function X(c) { return L + c * pw; }
+    function Y(r) { return T + (1 - r) * ph; }
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = (small ? '12px ' : '13px ') + '"Bricolage Grotesque", sans-serif';
+    ctx.textBaseline = 'alphabetic';
+
+    // over-budget region, hatched
+    ctx.save();
+    ctx.beginPath(); ctx.rect(X(BUDGET), T, X(1) - X(BUDGET), ph); ctx.clip();
+    ctx.globalAlpha = 0.28; ctx.strokeStyle = mark; ctx.lineWidth = 1;
+    for (var d = -ph; d < pw; d += 11) {
+      ctx.beginPath(); ctx.moveTo(X(BUDGET) + d, T + ph); ctx.lineTo(X(BUDGET) + d + ph, T); ctx.stroke();
+    }
+    ctx.restore();
+
+    // axes
+    ctx.strokeStyle = line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(L, T); ctx.lineTo(L, T + ph); ctx.lineTo(L + pw, T + ph); ctx.stroke();
+    ctx.fillStyle = muted;
+    ctx.textAlign = 'left'; ctx.fillText('reward', L, T - 9);
+    ctx.textAlign = 'right'; ctx.fillText('cost', L + pw, T + ph + 20);
+
+    // budget line
+    ctx.save();
+    ctx.strokeStyle = mark; ctx.lineWidth = 1.5; ctx.setLineDash([6, 5]);
+    ctx.beginPath(); ctx.moveTo(X(BUDGET), T); ctx.lineTo(X(BUDGET), T + ph); ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = mark; ctx.textAlign = 'left';
+    ctx.fillText('budget', X(BUDGET) + 6, T - 9);
+
+    // confidence boxes
+    ctx.save();
+    ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+    var order = arms.slice().sort(function (p, q) { return (p === winner) - (q === winner); });
+    order.forEach(function (a) {
+      var x0 = X(a.mc - a.w), x1 = X(a.mc + a.w), y0 = Y(a.mr + a.w), y1 = Y(a.mr - a.w);
+      var isWin = a === winner, live = a.state === 'active';
+      ctx.setLineDash(a.state === 'over' ? [4, 4] : []);
+      if (isWin) {
+        ctx.globalAlpha = 0.22; ctx.fillStyle = mark; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+        ctx.globalAlpha = 1; ctx.strokeStyle = mark; ctx.lineWidth = 3;
+      } else if (live) {
+        ctx.globalAlpha = 0.06; ctx.fillStyle = ink; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+        ctx.globalAlpha = 0.9; ctx.strokeStyle = ink; ctx.lineWidth = 1.5;
+      } else {
+        ctx.globalAlpha = 0.45; ctx.strokeStyle = muted; ctx.lineWidth = 1;
+      }
+      ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+      ctx.setLineDash([]);
+      ctx.globalAlpha = isWin || live ? 1 : 0.5;
+      ctx.fillStyle = isWin ? mark : (live ? ink : muted);
+      ctx.beginPath(); ctx.arc(X(a.mc), Y(a.mr), isWin ? 4.5 : 3, 0, 2 * Math.PI); ctx.fill();
+      ctx.globalAlpha = 1;
     });
-    navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current
-        ? 'var(--accent)' : '';
-    });
-  }, { passive: true });
+    ctx.restore();
+
+    var live = arms.filter(function (a) { return a.state === 'active'; }).length;
+    if (!done) statusEl.textContent = total + ' samples, ' + live + ' arms still in play';
+    else if (winner) statusEl.textContent = 'Best arm within budget certified after ' + total + ' samples';
+    else statusEl.textContent = 'Run stopped after ' + total + ' samples';
+  }
+
+  function frame(t) {
+    raf = null;
+    if (!visible || document.hidden) return;
+    if (done) {
+      if (!holdUntil) holdUntil = t + 3500;
+      else if (t > holdUntil) reset();
+    } else { step(); step(); }
+    draw();
+    raf = requestAnimationFrame(frame);
+  }
+  function kick() { if (!reduce && !raf) raf = requestAnimationFrame(frame); }
+  function finishNow() { while (!done) step(); draw(); }
+
+  document.getElementById('run-again').addEventListener('click', function () {
+    reset();
+    if (reduce) finishNow(); else { draw(); kick(); }
+  });
+  window.addEventListener('themechange', draw);
+  document.addEventListener('visibilitychange', kick);
+  if ('ResizeObserver' in window) new ResizeObserver(function () { size(); draw(); }).observe(cv);
+  else window.addEventListener('resize', function () { size(); draw(); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) { visible = e[0].isIntersecting; kick(); }).observe(cv);
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+
+  size(); reset();
+  if (reduce) finishNow(); else { draw(); kick(); }
+})();
 </script>
 </body>
 </html>
