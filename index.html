@@ -107,6 +107,20 @@ h1 {
   letter-spacing: -0.035em;
   margin: 0;
 }
+/* Name animation: each letter starts as a noisy estimate and converges to its place. */
+h1 .w { display: inline-block; white-space: nowrap; }
+h1 .ch { display: inline-block; will-change: transform; }
+h1.converge .ch { animation: converge 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; animation-delay: var(--d, 0s); }
+h1[data-ready] { cursor: pointer; }
+@keyframes converge {
+  0%   { opacity: 0; filter: blur(10px); color: var(--mark); transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); }
+  25%  { opacity: 1; filter: blur(3px); color: var(--mark); }
+  45%  { filter: blur(0); transform: translate(calc(var(--dx) * -0.3), calc(var(--dy) * -0.35)) rotate(calc(var(--rot) * -0.3)); }
+  65%  { color: var(--mark); transform: translate(calc(var(--dx) * 0.1), calc(var(--dy) * 0.14)) rotate(calc(var(--rot) * 0.1)); }
+  82%  { transform: translate(0, calc(var(--dy) * -0.05)); }
+  100% { opacity: 1; filter: none; color: var(--ink); transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { h1.converge .ch { animation: none; } }
 .masthead { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem 2rem; }
 .portrait { width: 11rem; height: 11rem; flex: none; object-fit: cover; object-position: 50% 30%; border-radius: 50%; border: 1px solid var(--line); box-shadow: 0 0 0 6px var(--panel); }
 .updates { max-height: 15.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.9rem; padding: 1.1rem 1.2rem; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; font-size: 1.05rem; line-height: 1.5; scrollbar-width: thin; scrollbar-color: var(--muted) transparent; }
@@ -192,7 +206,7 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
     <header>
       <div class="masthead">
         <div>
-          <h1>Udvas Das</h1>
+          <h1 id="name" aria-label="Udvas Das">Udvas Das</h1>
           <p class="lede">PhD student in reinforcement learning theory at Inria Lille.</p>
         </div>
         <img class="portrait" src="prof_pic.jpg" alt="Portrait of Udvas Das" onerror="this.remove()">
@@ -417,6 +431,42 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
     window.dispatchEvent(new Event('themechange'));
   });
   label();
+})();
+
+/* Name: split into letters, give each a random starting error, let them converge. Click to replay. */
+(function () {
+  var h = document.getElementById('name');
+  if (!h || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var words = h.textContent.trim().split(/\s+/), i = 0;
+  h.textContent = '';
+  words.forEach(function (word, wi) {
+    var w = document.createElement('span'); w.className = 'w'; w.setAttribute('aria-hidden', 'true');
+    word.split('').forEach(function (c) {
+      var s = document.createElement('span'); s.className = 'ch'; s.textContent = c; s.dataset.i = i++;
+      w.appendChild(s);
+    });
+    h.appendChild(w);
+    if (wi < words.length - 1) h.appendChild(document.createTextNode(' '));
+  });
+  function scatter() {
+    h.querySelectorAll('.ch').forEach(function (s) {
+      var sign = Math.random() < 0.5 ? -1 : 1;
+      s.style.setProperty('--dy', (sign * (0.35 + Math.random() * 0.55)).toFixed(2) + 'em');
+      s.style.setProperty('--dx', ((Math.random() - 0.5) * 0.3).toFixed(2) + 'em');
+      s.style.setProperty('--rot', ((Math.random() - 0.5) * 28).toFixed(1) + 'deg');
+      s.style.setProperty('--d', (s.dataset.i * 0.07 + Math.random() * 0.08).toFixed(2) + 's');
+    });
+  }
+  function play() {
+    scatter();
+    h.classList.remove('converge');
+    void h.offsetWidth;
+    h.classList.add('converge');
+  }
+  h.setAttribute('data-ready', '');
+  h.title = 'Click to replay';
+  h.addEventListener('click', play);
+  play();
 })();
 
 /* Hero figure: successive elimination for best-arm identification under a cost budget. */
