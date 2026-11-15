@@ -65,6 +65,8 @@ body {
 a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
 a:hover { background: var(--mark-soft); }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; border-radius: 2px; }
+a.p { color: inherit; text-decoration-style: dotted; text-decoration-color: var(--muted); }
+a.p:hover { color: var(--accent); }
 p { margin: 0; }
 
 .page {
@@ -187,6 +189,7 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
       <ul>
         <li><a href="#updates">Updates</a></li>
         <li><a href="#research">Research</a></li>
+        <li><a href="#ongoing">Ongoing works</a></li>
         <li><a href="#publications">Publications</a></li>
         <li><a href="#talks">Talks</a></li>
         <li><a href="#experience">Experience</a></li>
@@ -243,7 +246,29 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
       <div class="prose">
         <p>My doctoral thesis is on constrained reinforcement learning: I design efficient and frugal algorithms for sequential decision-making under uncertainty, with provable guarantees. A central question is how constraints, whether on safety, resources or preferences, and whether known or to be learned, change the statistical hardness of bandit and reinforcement learning problems. I study it through sample-complexity lower bounds and algorithms that match them.</p>
         <p>My interests also span fair machine learning, where fairness requirements act as constraints on the learner. Lately I have been working on performative machine learning and reinforcement learning, in which a deployed model or policy shifts the environment it learns from, and on dynamic fairness and auditing, where bias is measured and mitigated over time as models, data and populations evolve.</p>
-        <p>I am advised by Debabrota Basu and Odalric-Ambrym Maillard.</p>
+        <p>I am advised by <a class="p" href="https://debabrota-basu.github.io">Debabrota Basu</a> and <a class="p" href="https://odalric-ambrymmaillard.github.io/researcher/my_vision.html">Odalric-Ambrym Maillard</a>.</p>
+      </div>
+    </section>
+
+    <section id="ongoing">
+      <h2>Ongoing works/preprints</h2>
+      <div class="ledger">
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <a class="title" href="https://arxiv.org/abs/2607.19389">Simulating Eutopia: Revisiting Long-term Fairness with Outcomes, Performativity, and Dynamics</a>
+            <div class="sub"><a class="p" href="https://vedantpalit.github.io/">V. Palit</a>, <span class="me">U. Das</span>, B. Driss, <a class="p" href="https://debabrota-basu.github.io">D. Basu</a></div>
+            <div class="sub venue">European Conference on Algorithmic Fairness (ECAF)</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2026</div>
+          <div class="what">
+            <span class="title">Safely Optimal: Pure Exploration in Bandits with Unknown Linear Constraints</span>
+            <div class="sub"><span class="me">U. Das</span>, <a class="p" href="https://achraf-azize.github.io">A. Azize</a>, <a class="p" href="https://debabrota-basu.github.io">D. Basu</a></div>
+            <div class="sub venue">ICML Workshop on Hypothesis Testing, and EWRL</div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -254,7 +279,7 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
           <div class="when">2026</div>
           <div class="what">
             <a class="title" href="https://arxiv.org/abs/2512.20576">Performative Policy Gradient: Optimality in Performative Reinforcement Learning</a>
-            <div class="sub">D. Basu, <span class="me">U. Das</span>, B. Driss, U. Mukherjee</div>
+            <div class="sub"><a class="p" href="https://debabrota-basu.github.io">D. Basu</a>, <span class="me">U. Das</span>, B. Driss, U. Mukherjee</div>
             <div class="sub venue">International Conference on Machine Learning (ICML)</div>
           </div>
         </div>
@@ -262,7 +287,7 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
           <div class="when">2026</div>
           <div class="what">
             <a class="title" href="https://arxiv.org/abs/2606.09802">Bandits for Efficient Experimentation: Adapting to Control Group, Preferences, and Context Drifts</a>
-            <div class="sub"><span class="me">U. Das</span>, W. Radji, D. Basu, O.-A. Maillard</div>
+            <div class="sub"><span class="me">U. Das</span>, <a class="p" href="https://dblp.uni-trier.de/pid/331/0607.html">W. Radji</a>, <a class="p" href="https://debabrota-basu.github.io">D. Basu</a>, <a class="p" href="https://odalric-ambrymmaillard.github.io/researcher/my_vision.html">O.-A. Maillard</a></div>
             <div class="sub venue">Reinforcement Learning Conference (RLC)</div>
           </div>
         </div>
@@ -270,31 +295,15 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
           <div class="when">2026</div>
           <div class="what">
             <a class="title" href="https://arxiv.org/abs/2410.18844">Learning to Explore with Lagrangians for Bandits under Unknown Constraints</a>
-            <div class="sub"><span class="me">U. Das</span>, D. Basu</div>
+            <div class="sub"><span class="me">U. Das</span>, <a class="p" href="https://debabrota-basu.github.io">D. Basu</a></div>
             <div class="sub venue">International Conference on Artificial Intelligence and Statistics (AISTATS)</div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="when">2026</div>
-          <div class="what">
-            <a class="title" href="https://arxiv.org/abs/2607.19389">Simulating Eutopia: Revisiting Long-term Fairness with Outcomes, Performativity, and Dynamics</a>
-            <div class="sub">V. Palit, <span class="me">U. Das</span>, B. Driss, D. Basu</div>
-            <div class="sub venue">European Conference on Algorithmic Fairness (ECAF)</div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="when">2026</div>
-          <div class="what">
-            <span class="title">Safely Optimal: Pure Exploration in Bandits with Unknown Linear Constraints</span>
-            <div class="sub"><span class="me">U. Das</span>, A. Azize, D. Basu</div>
-            <div class="sub venue">ICML Workshop on Hypothesis Testing, and EWRL</div>
           </div>
         </div>
         <div class="row">
           <div class="when">2025</div>
           <div class="what">
             <span class="title">FraPPE: Fast and Efficient Preference-based Pure Exploration</span>
-            <div class="sub"><span class="me">U. Das</span>, A. Shukla, D. Basu</div>
+            <div class="sub"><span class="me">U. Das</span>, <a class="p" href="https://apurvshukla.github.io">A. Shukla</a>, <a class="p" href="https://debabrota-basu.github.io">D. Basu</a></div>
             <div class="sub venue">Advances in Neural Information Processing Systems (NeurIPS) 38, pp. 9225–9271</div>
           </div>
         </div>
@@ -302,7 +311,7 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
           <div class="when">2025</div>
           <div class="what">
             <a class="title" href="https://arxiv.org/abs/2508.06443">The Fair Game: Auditing &amp; Debiasing AI Algorithms Over Time</a>
-            <div class="sub">D. Basu, <span class="me">U. Das</span></div>
+            <div class="sub"><a class="p" href="https://debabrota-basu.github.io">D. Basu</a>, <span class="me">U. Das</span></div>
             <div class="sub venue">Cambridge Forum on AI: Law and Governance, 1, e27</div>
           </div>
         </div>
@@ -310,7 +319,7 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
           <div class="when">2025</div>
           <div class="what">
             <span class="title">Human Values in the Loop: Rethinking Bias and Alignment in Educational AI</span>
-            <div class="sub"><span class="me">U. Das</span>, D. Basu</div>
+            <div class="sub"><span class="me">U. Das</span>, <a class="p" href="https://debabrota-basu.github.io">D. Basu</a></div>
             <div class="sub">Book chapter in <a class="venue" href="https://www.amazon.com/dp/B0FLW192DG">AI Bias in Education: Performing Critical Oversight</a>, edited by Victoria Hedlund</div>
           </div>
         </div>
@@ -351,7 +360,7 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
           <div class="when">Nov 2026</div>
           <div class="what">
             <div class="title">Visiting researcher, Indian Institute of Science (IISc)</div>
-            <div class="sub">Sequential testing, with Shubhada Agrawal and Aditya Gopalan, as part of the Inria–IISc associate team FOSSIL</div>
+            <div class="sub">Sequential testing, with <a class="p" href="https://sites.google.com/view/shubhada-agrawal/">Shubhada Agrawal</a> and <a class="p" href="https://ece.iisc.ac.in/~aditya">Aditya Gopalan</a>, as part of the Inria–IISc associate team FOSSIL</div>
           </div>
         </div>
         <div class="row">
@@ -397,7 +406,7 @@ footer { color: var(--muted); font-size: 0.95rem; border-top: 1px solid var(--li
         <div class="row">
           <div class="when">2026</div>
           <div class="what">
-            <div class="title">Master's thesis of <a href="https://vedantpalit.github.io/">Vedant Palit</a>, co-supervision</div>
+            <div class="title">Master's thesis of <a class="p" href="https://vedantpalit.github.io/">Vedant Palit</a>, co-supervision</div>
             <div class="sub"><em>Revisiting Long-term Fairness in Sequential Decision Making</em>, Indian Institute of Technology Kharagpur</div>
           </div>
         </div>
